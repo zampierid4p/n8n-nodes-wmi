@@ -11,5 +11,4 @@ README_TEMPLATE.md
 nodes/HttpBin/httpbin.svg
 scripts/
 tests/
-# Escludere script python se non necessario pubblicare (commentare se serve nel runtime)
-# python/
+# (Non escludere python/ perché contiene wrapper necessario per engine impacket)

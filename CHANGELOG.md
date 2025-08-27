@@ -6,6 +6,12 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.3.3] - 2025-08-27
+
+### Fixed (packaging 0.3.3)
+
+- Inclusione wrapper Python impacket in `dist/python` e pacchetto npm (build task `build:python`).
+
 ## [0.3.2] - 2025-08-27
 
 ### Added (preflight 0.3.2)
@@ -161,7 +167,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...v0.3.0
