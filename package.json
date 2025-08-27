@@ -1,19 +1,28 @@
 {
   "name": "n8n-nodes-wmi",
   "version": "0.1.0",
-  "description": "",
+  "description": "Node community n8n per eseguire query WMI (Windows Management Instrumentation) su host Windows remoti.",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "n8n",
+    "wmi",
+    "windows",
+    "monitoring",
+    "inventory",
+    "system",
+    "management"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/zampierid4p/n8n-nodes-wmi#readme",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Marco Zampieri"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "git+https://github.com/zampierid4p/n8n-nodes-wmi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zampierid4p/n8n-nodes-wmi/issues"
   },
   "engines": {
     "node": ">=20.15"
@@ -49,6 +58,9 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "node-wmi": "^0.0.5"
