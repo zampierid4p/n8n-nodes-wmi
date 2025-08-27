@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-wmi",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Node community n8n per eseguire query WMI (Windows Management Instrumentation) su host Windows remoti.",
   "keywords": [
     "n8n-community-node-package",
