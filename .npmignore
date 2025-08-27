@@ -1,2 +1,9 @@
 .DS_Store
 *.tsbuildinfo
+
+# Esempi esclusi dal pacchetto
+credentials/ExampleCredentialsApi.credentials.ts
+credentials/HttpBinApi.credentials.ts
+nodes/ExampleNode/
+nodes/HttpBin/
+README_TEMPLATE.md

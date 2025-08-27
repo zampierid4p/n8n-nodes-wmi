@@ -22,9 +22,9 @@
 		"outDir": "./dist/",
 	},
 	"include": [
-		"credentials/**/*",
-		"nodes/**/*",
-		"nodes/**/*.json",
+		"credentials/WmiApi.credentials.ts",
+		"nodes/Wmi/**/*",
+		"nodes/Wmi/**/*.json",
 		"package.json",
 		"types/**/*"
 	],
