@@ -42,6 +42,15 @@ export class Wmi implements INodeType {
 				],
 				description: 'Motore di esecuzione. "WMIC" richiede che n8n giri su Windows con wmic disponibile.'
 			},
+			// Preflight (solo impacket)
+			{
+				displayName: 'Preflight Check',
+				name: 'preflight',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to verify before execution that Python interpreter is available and impacket module importable (fail-fast)',
+				displayOptions: { show: { engine: ['impacket'] } },
+			},
 			// Operation selection
 			{
 				displayName: 'Operation',
@@ -216,6 +225,7 @@ export class Wmi implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
+				const preflight = engine === 'impacket' ? this.getNodeParameter('preflight', i, false) as boolean : false;
 				const rawQuery = this.getNodeParameter('query', i, '') as string;
 				const klass = this.getNodeParameter('class', i, '') as string;
 				const propertiesStr = this.getNodeParameter('properties', i, '') as string;
@@ -336,6 +346,16 @@ export class Wmi implements INodeType {
 					const pythonInterpreter = resolvePython();
 					if (!pythonInterpreter) {
 						throw new NodeOperationError(this.getNode(), 'Python interpreter non trovato. Installa Python 3 oppure imposta variabile ambiente PYTHON_BIN con il percorso completo (es: /usr/local/bin/python3).');
+					}
+					if (preflight) {
+						try {
+							const test = spawnSync(pythonInterpreter, ['-c', 'import importlib,sys;importlib.import_module("impacket");sys.stdout.write("OK")'], { encoding: 'utf8', timeout: 4000 });
+							if (test.error) { throw new NodeOperationError(this.getNode(), test.error.message); }
+							if (test.status !== 0 || !test.stdout.includes('OK')) { throw new NodeOperationError(this.getNode(), `Impacket module non importabile (status=${test.status}) stdout=${test.stdout} stderr=${test.stderr}`); }
+							if (verbose) logDebug(`[WMI] Preflight impacket OK using interpreter ${pythonInterpreter}`);
+						} catch (e) {
+							throw new NodeOperationError(this.getNode(), `Preflight impacket fallito: ${(e as Error).message}`);
+						}
 					}
 					data = await new Promise((resolve, reject) => {
 						let done = false;
