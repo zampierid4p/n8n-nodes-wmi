@@ -37,6 +37,13 @@ export class Wmi implements INodeType {
 				placeholder: 'SELECT * FROM Win32_Processor',
 				description: 'The WMI query to execute',
 			},
+			{
+				displayName: 'Verbose Logging',
+				name: 'verbose',
+				type: 'boolean',
+				default: false,
+				description: 'Whether to output detailed execution information (host, user, timing, result count) to the server logs. Password is never logged.'
+			},
 		],
 	};
 
@@ -49,6 +56,12 @@ export class Wmi implements INodeType {
 			wmi = await import('node-wmi');
 		}
 
+		const verbose = this.getNodeParameter('verbose', 0, false) as boolean;
+
+		const noop = () => {};
+		const baseLogger: any = (this as any).logger || { debug: noop, log: noop, error: noop };
+		if (verbose) baseLogger.debug?.(`[WMI] Execution start: items=${items.length} executionId=${(this as any).getExecutionId?.() || 'n/a'}`) || baseLogger.log(`[WMI] Execution start: items=${items.length}`);
+
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const query = this.getNodeParameter('query', i, '') as string;
@@ -60,6 +73,9 @@ export class Wmi implements INodeType {
 					password: credentials.password as string,
 				};
 
+				if (verbose) baseLogger.debug?.(`[WMI] Item ${i} start host=${wmiOptions.host} user=${wmiOptions.user} query="${query}"`) || baseLogger.log(`[WMI] Item ${i} start`);
+
+				const started = Date.now();
 				const data = await new Promise((resolve, reject) => {
 					wmi.Query(wmiOptions).exec(query, (err: any, data: any) => {
 						if (err) {
@@ -69,11 +85,14 @@ export class Wmi implements INodeType {
 					});
 				});
 
+				if (verbose) { const count = Array.isArray(data) ? data.length : (data ? 1 : 0); baseLogger.debug?.(`[WMI] Item ${i} done ${Date.now() - started}ms results=${count}`) || baseLogger.log(`[WMI] Item ${i} done`); }
+
 				returnData.push({
 					json: { data: data as any[] },
 					pairedItem: { item: i },
 				});
 			} catch (error) {
+				if (verbose) baseLogger.error?.(`[WMI] Item ${i} error: ${(error as Error).message}`) || baseLogger.log(`[WMI] Item ${i} error: ${(error as Error).message}`);
 				if (this.continueOnFail()) {
 					returnData.push({
 						json: { error: error.message },
@@ -84,6 +103,8 @@ export class Wmi implements INodeType {
 				throw new NodeOperationError(this.getNode(), error);
 			}
 		}
+
+		if (verbose) baseLogger.debug?.('[WMI] Execution end') || baseLogger.log('[WMI] Execution end');
 
 		return [returnData];
 	}
