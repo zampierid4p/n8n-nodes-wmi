@@ -29,7 +29,7 @@
   },
   "main": "dist/nodes/Wmi/Wmi.node.js",
   "scripts": {
-    "build": "npx rimraf dist && tsc && gulp build:icons",
+  "build": "npx rimraf dist .tsbuildinfo && tsc --force && gulp build:icons",
     "dev": "tsc --watch",
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",

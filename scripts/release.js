@@ -79,15 +79,40 @@ function main() {
   const spec = process.argv[2];
   ensureCleanTree();
   run('npm run lint');
-  run('npm run build');
-  const newVersion = determineNewVersion(spec);
+  const pkgBefore = JSON.parse(fs.readFileSync('package.json','utf8'));
+  const prevVersion = pkgBefore.version;
+  const newVersion = determineNewVersion(spec || 'patch');
   updatePackageVersion(newVersion);
-  updateChangelog(newVersion); // best effort
+  updateChangelogLinks(prevVersion, newVersion);
+  run('npm run build');
   run('git add package.json CHANGELOG.md');
   run(`git commit -m "chore(release): v${newVersion}"`);
   run(`git tag v${newVersion}`);
   run('npm publish');
   console.log(`Rilascio completato v${newVersion}`);
+}
+
+function updateChangelogLinks(prevVersion, newVersion){
+  const clPath = 'CHANGELOG.md';
+  if(!fs.existsSync(clPath)) return;
+  let content = fs.readFileSync(clPath,'utf8');
+  // Inserisci sezione se non esiste già
+  if(!content.includes(`## [${newVersion}]`)){
+    const unreleasedHeader = '## [Unreleased]';
+    if(content.includes(unreleasedHeader)){
+      const today = new Date().toISOString().slice(0,10);
+      content = content.replace(unreleasedHeader, `${unreleasedHeader}\n\n## [${newVersion}] - ${today}`);
+    }
+  }
+  // Aggiorna link Unreleased
+  const unreleasedRegex = /\[Unreleased\]: .*\n/;
+  content = content.replace(unreleasedRegex, `[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v${newVersion}...HEAD\n`);
+  // Aggiungi link nuova versione se manca
+  if(!content.includes(`[${newVersion}]:`)){
+    const anchor = `[${prevVersion}]:`; // inserisci prima del precedente
+    content = content.replace(anchor, `[${newVersion}]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v${prevVersion}...v${newVersion}\n${anchor}`);
+  }
+  fs.writeFileSync(clPath, content);
 }
 
 main();

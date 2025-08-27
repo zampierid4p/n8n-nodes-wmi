@@ -6,16 +6,18 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+_Nessuna modifica al momento._
+
 ## [0.1.3] - 2025-08-27
 
-### Added
+### Changed (packaging 0.1.3)
 
-### Changed
+- Aggiunto script di rilascio automatizzato (`scripts/release.js`).
+- Migliorato processo build forzando compilazione (`--force`) e pulizia `.tsbuildinfo`.
 
-### Fixed
+### Fixed (packaging 0.1.3)
 
-
-_Nessuna modifica al momento._
+- Ripristinati file compilati mancanti nel pacchetto (problema temporaneo build precedente).
 
 ## [0.1.2] - 2025-08-27
 
@@ -61,7 +63,7 @@ _Nessuna modifica al momento._
 - Formattazione README (lint markdown).
 
 [Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.3...HEAD
-[0.1.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/vPREV...v0.1.3
+[0.1.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/zampierid4p/n8n-nodes-wmi/releases/tag/v0.1.0
