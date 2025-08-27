@@ -8,6 +8,17 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 _Nessuna modifica al momento._
 
+## [0.1.4] - 2025-08-27
+
+### Changed (build 0.1.4)
+
+- Rimosso flag non valido `--force` dallo script di build.
+- Pulizia preventiva di `dist` e `.tsbuildinfo` prima della compilazione per coerenza.
+
+### Fixed (packaging 0.1.4)
+
+- Garantita inclusione dei file compilati (`dist/credentials/*`, `dist/nodes/Wmi/*`) dopo refactor script release precedente.
+
 ## [0.1.3] - 2025-08-27
 
 ### Changed (packaging 0.1.3)
@@ -62,7 +73,8 @@ _Nessuna modifica al momento._
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.0...v0.1.1
