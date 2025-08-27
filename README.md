@@ -52,6 +52,7 @@ Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operati
 | Necessità di `call` (start/stop service, ecc.) | wmic |
 | Multi-piattaforma senza dipendenze Windows locali | node-wmi |
 | WQL via DCOM quando node-wmi fallisce / necessita autenticazione avanzata | impacket |
+| Fail-fast verifica ambiente Python+impacket prima della query | impacket + Preflight Check |
 
 ## Esempi di query WMI (engine node-wmi)
 
@@ -140,6 +141,8 @@ python3 -c "import impacket; import sys; print('Impacket OK')"
 ```
 
 Uso nel nodo: Engine = impacket, Operation = query, valorizza Query oppure Class/Properties/Where.
+
+Opzione Preflight Check (solo engine impacket): se abilitata il nodo verifica prima dell'esecuzione che l'interprete Python sia risolvibile e che il modulo `impacket` sia importabile, fallendo subito in caso contrario (fail-fast) per evitare timeout lunghi.
 
 
 Get informazioni sistema operativo (alias os):

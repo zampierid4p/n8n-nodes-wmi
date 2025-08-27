@@ -6,6 +6,16 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-08-27
+
+### Added (preflight 0.3.2)
+
+- Opzione "Preflight Check" per engine impacket: verifica interprete Python e import modulo `impacket` prima dell'esecuzione (fail-fast).
+
+### Changed (impacket robustness 0.3.2)
+
+- Rilevamento interprete Python con fallback multipli e messaggi errore migliorati (ENOENT, modulo mancante).
+
 ## [0.3.1] - 2025-08-27
 
 ### Changed (bump 0.3.1)
@@ -151,7 +161,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.9...v0.2.0
