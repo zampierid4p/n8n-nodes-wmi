@@ -6,6 +6,13 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.1.8] - 2025-08-27
+
+### Fixed (error handling 0.1.8)
+
+- Migliorata gestione errori: validazione query vuota, credenziali mancanti o campi host/user/password vuoti.
+- Messaggio arricchito per errori generici "Cannot convert undefined or null to object" con contesto WMI.
+
 ## [0.1.7] - 2025-08-27
 
 ## [0.1.6] - 2025-08-27
@@ -86,7 +93,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.7...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.4...v0.1.5
