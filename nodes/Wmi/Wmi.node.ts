@@ -39,6 +39,7 @@ export class Wmi implements INodeType {
 					{ name: 'Node WMI (Node-Wmi)', value: 'node-wmi', description: 'Usa libreria node-wmi (WQL) funzionante anche fuori da Windows' },
 					{ name: 'WMIC (Wmi-Query)', value: 'wmic', description: 'Usa comando wmic locale (solo host n8n Windows) permette alias e call' },
 					{ name: 'Impacket (Python DCOM)', value: 'impacket', description: 'Usa script Python impacket per eseguire query WQL via DCOM (richiede python3 + impacket installati)' },
+					{ name: 'WMIC CLI (Linux Samba)', value: 'wmic-cli', description: 'Usa binario wmic (pacchetto samba) su Linux per query WQL remote (solo operation=query)' },
 				],
 				description: 'Motore di esecuzione. "WMIC" richiede che n8n giri su Windows con wmic disponibile.'
 			},
@@ -399,6 +400,45 @@ export class Wmi implements INodeType {
 						});
 						child.on('error', (e) => {
 							if (done) return; done = true; clearTimeout(timer); reject(new Error(`Impacket spawn error: ${(e as Error).message}`));
+						});
+					});
+				} else if (engine === 'wmic-cli' && operation === 'query') {
+					// Richiede host Linux con binario wmic (pacchetto samba / samba-common-bin)
+					if (process.platform === 'win32') {
+						throw new NodeOperationError(this.getNode(), 'Engine wmic-cli è pensato per host n8n Linux (usa engine wmic su Windows)');
+					}
+					const { exec } = await import('node:child_process');
+					data = await new Promise((resolve, reject) => {
+						let done = false;
+						const timer: ReturnType<typeof setTimeout> = setTimeout(() => { if (done) return; done = true; reject(new Error(`WMIC CLI query timeout after ${timeoutMs}ms`)); }, timeoutMs);
+						// Costruzione comando wmic
+						// Formato: wmic -U DOM/user%pass //host "SELECT ..."
+						const domainPart = domain ? `${domain}/` : '';
+						const userNoDomain = userField; // già separato prima
+						const cred = `${domainPart}${userNoDomain}%${password.replace(/'/g, "'\\''")}`; // escaping basico
+						const wmicBin = process.env.WMIC_BIN || 'wmic';
+						const cmd = `${wmicBin} -U '${cred}' //${wmiOptions.host} "${query.replace(/"/g, '\"')}"`;
+						if (verbose) logDebug(`[WMI] wmic-cli exec cmd=${cmd}`);
+						exec(cmd, { maxBuffer: 10 * 1024 * 1024 }, (err, stdout, stderr) => {
+							if (done) return; done = true; clearTimeout(timer);
+							if (err) {
+								return reject(new Error(`WMIC CLI exec error: ${err.message} stderr=${stderr || ''}`));
+							}
+							try {
+								// Output wmic CLI è tabellare. Converte in JSON basilare.
+								const lines = stdout.split(/\r?\n/).filter(l => l.trim());
+								if (lines.length < 2) return resolve([]);
+								const header = lines[0].split(/\s{2,}/).map(h => h.trim()).filter(Boolean);
+								const rows = lines.slice(1).map(line => {
+									const cols = line.split(/\s{2,}/).map(c => c.trim());
+									const obj: any = {};
+									header.forEach((h, idx) => { obj[h] = cols[idx] || ''; });
+									return obj;
+								});
+								resolve(rows);
+							} catch (e) {
+								reject(new Error(`WMIC CLI parse error: ${(e as Error).message}`));
+							}
 						});
 					});
 				} else if (engine === 'wmic') {

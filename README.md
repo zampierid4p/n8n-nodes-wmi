@@ -53,6 +53,7 @@ Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operati
 | Multi-piattaforma senza dipendenze Windows locali | node-wmi |
 | WQL via DCOM quando node-wmi fallisce / necessita autenticazione avanzata | impacket |
 | Fail-fast verifica ambiente Python+impacket prima della query | impacket + Preflight Check |
+| Query WQL remota da host n8n Linux usando binario wmic Samba | wmic-cli |
 
 ## Esempi di query WMI (engine node-wmi)
 
@@ -123,6 +124,25 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 ```
 
 ## Esempi WMIC alias (engine wmic)
+
+### Engine wmic-cli (Linux)
+
+Prerequisiti (Ubuntu/Debian):
+
+```bash
+sudo apt-get update && sudo apt-get install -y samba-common-bin
+which wmic
+```
+
+Uso: Engine = wmic-cli, Operation = query.
+
+Nota: accetta solo query WQL (nessun supporto alias/call). Il comando eseguito è simile a:
+`wmic -U DOM/utente%password //HOST "SELECT * FROM Win32_OperatingSystem"`
+
+Variabili opzionali:
+
+* WMIC_BIN per indicare un path alternativo (default `wmic`).
+
 
 ### Engine Impacket (setup rapido)
 

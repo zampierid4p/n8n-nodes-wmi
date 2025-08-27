@@ -12,6 +12,10 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 - Inclusione wrapper Python impacket in `dist/python` e pacchetto npm (build task `build:python`).
 
+### Added (wmic-cli 0.3.3)
+
+- Nuovo engine `wmic-cli` (Linux) che usa binario `wmic` di Samba per eseguire query WQL (solo operation=query) su host Windows remoti.
+
 ## [0.3.2] - 2025-08-27
 
 ### Added (preflight 0.3.2)
