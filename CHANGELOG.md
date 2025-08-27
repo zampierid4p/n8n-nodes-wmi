@@ -6,6 +6,25 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-08-27
+
+### Added (dual engine & WMIC 0.2.0)
+
+- Supporto dual engine: selezione tra `node-wmi` (WQL generico cross-platform) e `wmic` (vendor embeddato `wmi-query`).
+- Nuove operazioni WMIC: `get` (alias), `call` (azioni su alias), `listAlias` (elenco alias disponibili).
+- Parametri nodo estesi: Engine, Operation, Alias, Fields, Action, Format, Properties, Where.
+- Embedding libreria `wmi-query` (vendorizzata) per esecuzione di comandi WMIC avanzati.
+
+### Changed (refactor 0.2.0)
+
+- Refactor file `Wmi.node.ts` con logging migliorato e struttura proprietà corretta.
+- Migliorata gestione credenziali con parsing dominio `DOMAIN\\user` automatico e namespace opzionale.
+
+### Fixed (stability 0.2.0)
+
+- Corretto parsing array `properties` del nodo (errore sintattico introdotto in refactor precedente).
+- Validazioni aggiuntive combinazioni engine/operation non supportate.
+
 ## [0.1.9] - 2025-08-27
 
 ### Fixed (logging 0.1.9)
@@ -99,7 +118,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.9...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.9...v0.2.0
 [0.1.9]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.6...v0.1.7

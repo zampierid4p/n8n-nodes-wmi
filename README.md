@@ -2,12 +2,18 @@
 
 ![npm version](https://img.shields.io/npm/v/n8n-nodes-wmi.svg) ![npm downloads](https://img.shields.io/npm/dm/n8n-nodes-wmi.svg) ![license](https://img.shields.io/npm/l/n8n-nodes-wmi.svg) ![maintenance](https://img.shields.io/maintenance/yes/2025.svg)
 
-Questo è un pacchetto di nodi della community di n8n che permette di eseguire query WMI (Windows Management Instrumentation) su macchine Windows remote.
+Questo è un pacchetto di nodi della community di n8n che permette di:
+
+* Eseguire query WMI (WQL) su macchine Windows remote (engine "node-wmi").
+* Eseguire comandi WMIC (alias get / call / list alias) tramite engine vendorizzato `wmi-query` (richiede che n8n giri su Windows e che `wmic` sia disponibile nel PATH).
+
+Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operation".
 
 ## Prerequisiti
 
 * n8n installato.
-* Accesso a una macchina Windows con WMI abilitato e le credenziali necessarie (host, utente, password).
+* Accesso a una o più macchine Windows con WMI abilitato e le credenziali necessarie (host, user, password, opzionale domain e namespace).
+* Per engine WMIC: n8n deve girare su Windows e il comando `wmic` deve essere disponibile.
 
 ## Installazione
 
@@ -19,11 +25,32 @@ Questo è un pacchetto di nodi della community di n8n che permette di eseguire q
 ## Come usare
 
 1. Aggiungi il nodo "WMI" al tuo workflow.
-2. Crea nuove credenziali "WMI API", fornendo l'host, il nome utente e la password per la macchina Windows a cui vuoi connetterti.
-3. Nel nodo WMI, inserisci la query WMI che vuoi eseguire (es. `SELECT * FROM Win32_Processor`).
-4. Esegui il workflow. L'output della query sarà disponibile nel pannello di output del nodo.
+2. Crea nuove credenziali "WMI API", fornendo:
+    * Host (FQDN o IP)
+    * User (formato `utente` oppure `DOMINIO\\utente`)
+    * Domain (opzionale se non incluso nello user)
+    * Password
+    * Namespace (default `root\\CIMV2`)
+3. Nel nodo WMI scegli l'engine:
+    * node-wmi: per query WQL standard (operation = query)
+    * wmic: per alias (operation = get / call / listAlias)
+4. Imposta l'operazione e i relativi campi:
+    * Query: puoi lasciare vuota la query e usare Class + Properties + Where
+    * Get: richiede Alias (es. `os`, `process`, `service`), opzionale Fields e Where
+    * Call: richiede Alias + Action (es. `process` + `terminate`), opzionale Where
+    * ListAlias: nessun altro campo richiesto
+5. Esegui il workflow. L'output JSON sarà disponibile nel pannello di output del nodo (campo `json.data`).
 
-## Esempi di query WMI
+### Scelta dell'engine
+
+| Scenario | Engine consigliato |
+|----------|-------------------|
+| Query WQL cross-platform (n8n su Linux/Mac) | node-wmi |
+| Azioni o recupero rapido via alias WMIC | wmic |
+| Necessità di `call` (start/stop service, ecc.) | wmic |
+| Multi-piattaforma senza dipendenze Windows locali | node-wmi |
+
+## Esempi di query WMI (engine node-wmi)
 
 Copiale nel campo Query del nodo.
 
@@ -90,6 +117,42 @@ Nota: per filtri temporali più accurati usare il formato WMI datetime (es: 2025
 SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Running'
 ```
 
+## Esempi WMIC alias (engine wmic)
+
+
+Get informazioni sistema operativo (alias os):
+
+```text
+Alias = os
+Operation = get
+Fields (opzionale) = Caption,Version,BuildNumber
+```
+
+Elenca servizi non in esecuzione AUTO:
+
+```text
+Alias = service
+Operation = get
+Where = StartMode='Auto' AND State<>'Running'
+Fields = Name,State,StartMode
+```
+
+Termina un processo specifico (esempio):
+
+```text
+Alias = process
+Operation = call
+Action = terminate
+Where = name='notepad.exe'
+```
+
+Elenco alias disponibili:
+
+```text
+Operation = listAlias
+Engine = wmic
+```
+
 ## Suggerimenti
 
 * Evita SELECT * in ambienti con molte entità: specifica i campi per ridurre i dati.
@@ -97,7 +160,9 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 * Per query lente valuta di spezzare il lavoro in più workflow o aggiungere un limit (non tutte le classi supportano).
 * Se ottieni errori di permessi, assicurati che l'utente appartenga al gruppo "Distributed COM Users" e abbia firewall configurato.
 * La latenza dipende dalla configurazione DCOM/WMI e dalla rete: preferisci query mirate.
-* Attiva "Verbose Logging" (impostazione del nodo) solo per debugging: registra host, utente (non la password), tempi di esecuzione e numero risultati per ogni item.
+* Attiva "Verbose Logging" solo per debugging: registra host, utente (non la password), tempi di esecuzione e numero risultati per ogni item.
+* Con operation=query puoi lasciare vuota la Query e usare Class/Properties/Where per costruzione automatica.
+* Per domain puoi scriverlo nel campo dedicato o direttamente nello user come `DOMINIO\\utente`.
 
 ## Troubleshooting
 
@@ -117,6 +182,7 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 ### Sicurezza
 
 * Usa account con privilegi minimi.
+* Evita di dare a n8n il permesso di eseguire chiamate WMIC destructive senza controlli (operation=call).
 * Evita credenziali Domain Admin nei workflow.
 * Ruota periodicamente le password archiviate.
 * Limita i permessi dei workflow contenenti il nodo.
@@ -126,3 +192,7 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 ## Licenza
 
 MIT
+
+---
+
+Changelog completo in `CHANGELOG.md`.

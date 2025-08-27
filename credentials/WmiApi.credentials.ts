@@ -19,6 +19,13 @@ export class WmiApi implements ICredentialType {
 			default: '',
 		},
 		{
+			displayName: 'Domain (opzionale)',
+			name: 'domain',
+			type: 'string',
+			default: '',
+			description: 'Dominio o WORKGROUP. Se lasciato vuoto e lo user contiene \\ verrà separato automaticamente.'
+		},
+		{
 			displayName: 'Password',
 			name: 'password',
 			type: 'string',
@@ -26,6 +33,13 @@ export class WmiApi implements ICredentialType {
 				password: true,
 			},
 			default: '',
+		},
+		{
+			displayName: 'Namespace (opzionale)',
+			name: 'namespace',
+			type: 'string',
+			default: 'root\\\\CIMV2',
+			description: 'Namespace WMI (default root\\CIMV2). Usa doppio backslash per escape.'
 		},
 	];
 }

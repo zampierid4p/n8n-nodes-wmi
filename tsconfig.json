@@ -26,6 +26,7 @@
 		"credentials/WmiApi.credentials.ts",
 		"nodes/Wmi/**/*",
 		"nodes/Wmi/**/*.json",
+		"vendor/**/*",
 		"package.json",
 		"types/**/*"
 	],
