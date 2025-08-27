@@ -6,6 +6,12 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-08-27
+
+### Changed (bump 0.3.1)
+
+- Version bump only (no functional changes). Preparing for next development cycle.
+
 ## [0.3.0] - 2025-08-27
 
 ### Added (impacket 0.3.0)
@@ -59,7 +65,7 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Aggiunto wrapper di logging sicuro per evitare TypeError su meta undefined in modalità Verbose Logging.
 
 ## [0.1.8] - 2025-08-27
-
+ 
 ### Fixed (error handling 0.1.8)
 
 - Migliorata gestione errori: validazione query vuota, credenziali mancanti o campi host/user/password vuoti.
@@ -145,7 +151,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.9...v0.2.0
 [0.1.9]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.8...v0.1.9
