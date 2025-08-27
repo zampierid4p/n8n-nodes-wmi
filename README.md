@@ -6,6 +6,7 @@ Questo è un pacchetto di nodi della community di n8n che permette di:
 
 * Eseguire query WMI (WQL) su macchine Windows remote (engine "node-wmi").
 * Eseguire comandi WMIC (alias get / call / list alias) tramite engine vendorizzato `wmi-query` (richiede che n8n giri su Windows e che `wmic` sia disponibile nel PATH).
+* Eseguire query WQL via DCOM con engine `impacket` (richiede Python 3 + libreria `impacket`).
 
 Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operation".
 
@@ -14,6 +15,7 @@ Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operati
 * n8n installato.
 * Accesso a una o più macchine Windows con WMI abilitato e le credenziali necessarie (host, user, password, opzionale domain e namespace).
 * Per engine WMIC: n8n deve girare su Windows e il comando `wmic` deve essere disponibile.
+* Per engine Impacket: Python 3 installato sull'host n8n + `pip install impacket` (eventuale variabile `PYTHON_BIN` per percorso custom).
 
 ## Installazione
 
@@ -49,6 +51,7 @@ Seleziona l'engine nel campo "Engine" del nodo e l'operazione nel campo "Operati
 | Azioni o recupero rapido via alias WMIC | wmic |
 | Necessità di `call` (start/stop service, ecc.) | wmic |
 | Multi-piattaforma senza dipendenze Windows locali | node-wmi |
+| WQL via DCOM quando node-wmi fallisce / necessita autenticazione avanzata | impacket |
 
 ## Esempi di query WMI (engine node-wmi)
 
@@ -109,6 +112,7 @@ SELECT Name, PercentProcessorTime FROM Win32_PerfFormattedData_PerfOS_Processor
 ```sql
 SELECT * FROM Win32_NTLogEvent WHERE Logfile='System'
 ```
+ 
 Nota: per filtri temporali più accurati usare il formato WMI datetime (es: 20250101000000.000000+000).
 
 ### Esempio filtro con condizioni
@@ -118,6 +122,24 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 ```
 
 ## Esempi WMIC alias (engine wmic)
+
+### Engine Impacket (setup rapido)
+
+Installazione su host Linux di n8n:
+
+```bash
+sudo apt-get update && sudo apt-get install -y python3 python3-pip
+pip install --upgrade pip
+pip install impacket
+```
+
+Verifica:
+
+```bash
+python3 -c "import impacket; import sys; print('Impacket OK')"
+```
+
+Uso nel nodo: Engine = impacket, Operation = query, valorizza Query oppure Class/Properties/Where.
 
 
 Get informazioni sistema operativo (alias os):
@@ -163,6 +185,7 @@ Engine = wmic
 * Attiva "Verbose Logging" solo per debugging: registra host, utente (non la password), tempi di esecuzione e numero risultati per ogni item.
 * Con operation=query puoi lasciare vuota la Query e usare Class/Properties/Where per costruzione automatica.
 * Per domain puoi scriverlo nel campo dedicato o direttamente nello user come `DOMINIO\\utente`.
+* Engine impacket: utile se hai limitazioni DCOM particolari o vuoi futura estensione Kerberos (non ancora implementata qui).
 
 ## Troubleshooting
 
@@ -183,6 +206,7 @@ Engine = wmic
 
 * Usa account con privilegi minimi.
 * Evita di dare a n8n il permesso di eseguire chiamate WMIC destructive senza controlli (operation=call).
+* Per engine impacket mantieni aggiornato il pacchetto `impacket` e limita l'accesso alla shell Python.
 * Evita credenziali Domain Admin nei workflow.
 * Ruota periodicamente le password archiviate.
 * Limita i permessi dei workflow contenenti il nodo.

@@ -28,6 +28,7 @@
 		"nodes/Wmi/**/*.json",
 		"vendor/**/*",
 		"package.json",
-		"types/**/*"
+		"types/**/*",
+		"tests/**/*"
 	],
 }

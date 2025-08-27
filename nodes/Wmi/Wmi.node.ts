@@ -38,6 +38,7 @@ export class Wmi implements INodeType {
 				options: [
 					{ name: 'Node WMI (Node-Wmi)', value: 'node-wmi', description: 'Usa libreria node-wmi (WQL) funzionante anche fuori da Windows' },
 					{ name: 'WMIC (Wmi-Query)', value: 'wmic', description: 'Usa comando wmic locale (solo host n8n Windows) permette alias e call' },
+					{ name: 'Impacket (Python DCOM)', value: 'impacket', description: 'Usa script Python impacket per eseguire query WQL via DCOM (richiede python3 + impacket installati)' },
 				],
 				description: 'Motore di esecuzione. "WMIC" richiede che n8n giri su Windows con wmic disponibile.'
 			},
@@ -259,6 +260,13 @@ export class Wmi implements INodeType {
 						userField = parts.slice(1).join('\\');
 					}
 				}
+				// Evita doppio dominio se l'utente ha già DOM\\user e il campo domain è anche valorizzato
+				if (domain && userField.includes('\\')) {
+					const parts = userField.split('\\');
+					if (parts.length >= 2 && parts[0].toLowerCase() === (domain as string).toLowerCase()) {
+						userField = parts.slice(1).join('\\');
+					}
+				}
 				const password = (credentials.password as string) || '';
 				const userCombined = domain ? `${domain}\\${userField}` : userField;
 				const wmiOptions: any = {
@@ -272,6 +280,9 @@ export class Wmi implements INodeType {
 				if (namespace) wmiOptions.namespace = namespace.replace(/\\\\/g, '\\');
 				if (!wmiOptions.host || !wmiOptions.user || !wmiOptions.pass) {
 					throw new NodeOperationError(this.getNode(), 'One or more required credential fields (host, user, password) are empty');
+				}
+				if (verbose) {
+					logDebug(`[WMI] Composed credentials host=${wmiOptions.host} user=${wmiOptions.user} namespace=${wmiOptions.namespace || 'root\\CIMV2'}`);
 				}
 
 				if (operation === 'query') {
@@ -302,6 +313,51 @@ export class Wmi implements INodeType {
 								return reject(err);
 							}
 							resolve(d);
+						});
+					});
+				} else if (engine === 'impacket' && operation === 'query') {
+					// Esegue script Python impacket wrapper
+					const { execFile } = await import('node:child_process');
+					data = await new Promise((resolve, reject) => {
+						let done = false;
+						const timer = setTimeout(() => {
+							if (done) return; done = true; reject(new Error(`Impacket query timeout after ${timeoutMs}ms`));
+						}, timeoutMs);
+						const args = [
+							`${__dirname}/../../python/wmi_impacket_wrapper.py`,
+							'--host', wmiOptions.host,
+							'--user', wmiOptions.user,
+							'--password', wmiOptions.pass,
+							'--namespace', wmiOptions.namespace || 'root\\CIMV2',
+							'--query', query,
+						];
+						// Domain: se user include già backslash lo script wrapper userà domain vuoto
+						if (wmiOptions.user && wmiOptions.user.includes('\\')) {
+							const maybeDomain = wmiOptions.user.split('\\')[0];
+							if (maybeDomain && domain && maybeDomain.toLowerCase() === domain.toLowerCase()) {
+								args.push('--domain', domain);
+							}
+						} else if (domain) {
+							args.push('--domain', domain);
+						}
+						const python = process.env.PYTHON_BIN || 'python3';
+						const child = execFile(python, args, { timeout: timeoutMs + 2000 }, (err, stdout, stderr) => {
+							if (done) return;
+							done = true;
+							clearTimeout(timer);
+							if (err) {
+								return reject(new Error(`Impacket exec error: ${err.message} stderr=${stderr || ''}`));
+							}
+							try {
+								const parsed = JSON.parse(stdout || '{}');
+								if (parsed.error) return reject(new Error(parsed.error));
+								resolve(parsed.data || []);
+							} catch (e) {
+								reject(new Error('Impacket JSON parse error: ' + (e as Error).message));
+							}
+						});
+						child.on('error', (e) => {
+							if (done) return; done = true; clearTimeout(timer); reject(new Error(`Impacket spawn error: ${(e as Error).message}`));
 						});
 					});
 				} else if (engine === 'wmic') {

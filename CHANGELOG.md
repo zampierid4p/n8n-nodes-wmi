@@ -6,6 +6,33 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-08-27
+
+### Added (impacket 0.3.0)
+
+- Engine impacket (Python DCOM) per query WQL (wrapper incluso) e test mock associato.
+
+### Changed (docs 0.3.0)
+
+- README ampliato con sezione setup Impacket e tab scenari engine.
+
+### Fixed (lint 0.3.0)
+
+- Lint README (spaziature blocchi codice) dopo aggiunta impacket.
+
+### Added (impacket engine)
+
+- Nuovo engine `impacket` (Python DCOM) per eseguire query WQL via DCOM, usando wrapper `python/wmi_impacket_wrapper.py`.
+- Supporto variabile `PYTHON_BIN` per specificare interprete Python.
+
+### Added (tests)
+
+- Test unitario mock per engine impacket (`tests/wmi.impacket.test.ts`).
+
+### Security / Ops
+
+- Documentazione (README) aggiornata con prerequisiti Python + impacket e raccomandazioni sicurezza per dipendenza esterna.
+
 ## [0.2.0] - 2025-08-27
 
 ### Added (dual engine & WMIC 0.2.0)
@@ -118,7 +145,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.9...v0.2.0
 [0.1.9]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.8...v0.1.9
 [0.1.8]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.7...v0.1.8
