@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-wmi",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Node community n8n per eseguire query WMI (Windows Management Instrumentation) su host Windows remoti.",
   "keywords": [
     "n8n-community-node-package",
@@ -34,8 +34,8 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
-  "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json",
-  "release": "node scripts/release.js"
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json",
+    "release": "node scripts/release.js"
   },
   "files": [
     "dist"

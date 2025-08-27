@@ -6,6 +6,15 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [Unreleased]
 
+## [0.1.3] - 2025-08-27
+
+### Added
+
+### Changed
+
+### Fixed
+
+
 _Nessuna modifica al momento._
 
 ## [0.1.2] - 2025-08-27
@@ -51,7 +60,8 @@ _Nessuna modifica al momento._
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/vPREV...v0.1.3
 [0.1.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/zampierid4p/n8n-nodes-wmi/releases/tag/v0.1.0
