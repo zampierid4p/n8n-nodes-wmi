@@ -20,6 +20,7 @@
 		"sourceMap": true,
 		"skipLibCheck": true,
 		"outDir": "./dist/",
+		"tsBuildInfoFile": "./.tsbuildinfo",
 	},
 	"include": [
 		"credentials/WmiApi.credentials.ts",

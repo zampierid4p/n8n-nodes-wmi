@@ -1,12 +1,6 @@
-.DS_Store
-*.tsbuildinfo
-
-# Esempi esclusi dal pacchetto
+# Ignora file di esempio non inclusi in tsconfig
 credentials/ExampleCredentialsApi.credentials.ts
 credentials/HttpBinApi.credentials.ts
 nodes/ExampleNode/
 nodes/HttpBin/
 README_TEMPLATE.md
-.tsbuildinfo
-nodes/HttpBin/httpbin.svg
-scripts/
