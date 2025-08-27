@@ -8,7 +8,10 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [0.1.5] - 2025-08-27
 
-_Nessuna modifica al momento._
+### Changed (docs & icon 0.1.5)
+
+- Aggiornato `documentationUrl` nelle credenziali WMI.
+- Sostituita icona del nodo WMI con nuova versione SVG.
 
 ## [0.1.4] - 2025-08-27
 
