@@ -65,13 +65,22 @@ export class Wmi implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const query = this.getNodeParameter('query', i, '') as string;
+				if (!query || !query.trim()) {
+					throw new NodeOperationError(this.getNode(), 'Query parameter is empty');
+				}
 				const credentials = await this.getCredentials('wmiApi');
+				if (!credentials || typeof credentials !== 'object') {
+					throw new NodeOperationError(this.getNode(), 'Missing credentials object');
+				}
 
 				const wmiOptions = {
-					host: credentials.host as string,
-					user: credentials.user as string,
-					password: credentials.password as string,
+					host: (credentials.host as string) || '',
+					user: (credentials.user as string) || '',
+					password: (credentials.password as string) || '',
 				};
+				if (!wmiOptions.host || !wmiOptions.user || !wmiOptions.password) {
+					throw new NodeOperationError(this.getNode(), 'One or more required credential fields (host, user, password) are empty');
+				}
 
 				if (verbose) baseLogger.debug?.(`[WMI] Item ${i} start host=${wmiOptions.host} user=${wmiOptions.user} query="${query}"`) || baseLogger.log(`[WMI] Item ${i} start`);
 
@@ -92,6 +101,10 @@ export class Wmi implements INodeType {
 					pairedItem: { item: i },
 				});
 			} catch (error) {
+				// Aggiunge contesto ad errori generici 'Cannot convert undefined or null to object'
+				if ((error as Error).message && (error as Error).message.includes('Cannot convert undefined or null to object')) {
+					(error as Error).message = `WMI internal error (possible invalid credentials or query). Original: ${(error as Error).message}`;
+				}
 				if (verbose) baseLogger.error?.(`[WMI] Item ${i} error: ${(error as Error).message}`) || baseLogger.log(`[WMI] Item ${i} error: ${(error as Error).message}`);
 				if (this.continueOnFail()) {
 					returnData.push({
