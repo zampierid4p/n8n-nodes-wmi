@@ -317,7 +317,26 @@ export class Wmi implements INodeType {
 					});
 				} else if (engine === 'impacket' && operation === 'query') {
 					// Esegue script Python impacket wrapper
-					const { execFile } = await import('node:child_process');
+					const { execFile, spawnSync } = await import('node:child_process');
+					// Risoluzione interprete Python con fallback se python3 non presente
+					const resolvePython = () => {
+						const explicit = process.env.PYTHON_BIN;
+						const candidates = [explicit, 'python3', 'python', '/usr/bin/python3', '/usr/local/bin/python3', '/opt/homebrew/bin/python3'].filter(Boolean) as string[];
+						for (const c of candidates) {
+							try {
+								const res = spawnSync(c, ['--version'], { encoding: 'utf8' });
+								if (res.error) continue;
+								if (res.status === 0 && (res.stdout + res.stderr).toLowerCase().includes('python')) {
+									return c;
+								}
+							} catch {}
+						}
+						return null;
+					};
+					const pythonInterpreter = resolvePython();
+					if (!pythonInterpreter) {
+						throw new NodeOperationError(this.getNode(), 'Python interpreter non trovato. Installa Python 3 oppure imposta variabile ambiente PYTHON_BIN con il percorso completo (es: /usr/local/bin/python3).');
+					}
 					data = await new Promise((resolve, reject) => {
 						let done = false;
 						const timer = setTimeout(() => {
@@ -340,12 +359,14 @@ export class Wmi implements INodeType {
 						} else if (domain) {
 							args.push('--domain', domain);
 						}
-						const python = process.env.PYTHON_BIN || 'python3';
-						const child = execFile(python, args, { timeout: timeoutMs + 2000 }, (err, stdout, stderr) => {
+						const child = execFile(pythonInterpreter, args, { timeout: timeoutMs + 2000 }, (err: any, stdout: string, stderr: string) => {
 							if (done) return;
 							done = true;
 							clearTimeout(timer);
 							if (err) {
+								if ((err as any).code === 'ENOENT') {
+									return reject(new Error(`Impacket exec error: interprete Python non trovato (${pythonInterpreter}). Imposta PYTHON_BIN o installa python3. stderr=${stderr || ''}`));
+								}
 								return reject(new Error(`Impacket exec error: ${err.message} stderr=${stderr || ''}`));
 							}
 							try {
