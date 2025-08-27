@@ -10,3 +10,6 @@ README_TEMPLATE.md
 .tsbuildinfo
 nodes/HttpBin/httpbin.svg
 scripts/
+tests/
+# Escludere script python se non necessario pubblicare (commentare se serve nel runtime)
+# python/
