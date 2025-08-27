@@ -8,6 +8,10 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 ## [0.1.6] - 2025-08-27
 
+### Added (features 0.1.6)
+
+- Opzione "Verbose Logging" per tracciare dettagli esecuzione (query, host, timing, risultati) a fini di debug.
+
 ## [0.1.5] - 2025-08-27
 
 ### Changed (docs & icon 0.1.5)

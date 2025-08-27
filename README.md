@@ -97,6 +97,7 @@ SELECT Name, Status FROM Win32_Service WHERE StartMode='Auto' AND State<>'Runnin
 * Per query lente valuta di spezzare il lavoro in più workflow o aggiungere un limit (non tutte le classi supportano).
 * Se ottieni errori di permessi, assicurati che l'utente appartenga al gruppo "Distributed COM Users" e abbia firewall configurato.
 * La latenza dipende dalla configurazione DCOM/WMI e dalla rete: preferisci query mirate.
+* Attiva "Verbose Logging" (impostazione del nodo) solo per debugging: registra host, utente (non la password), tempi di esecuzione e numero risultati per ogni item.
 
 ## Troubleshooting
 
