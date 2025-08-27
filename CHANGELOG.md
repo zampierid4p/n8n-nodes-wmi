@@ -16,6 +16,12 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 
 - Nuovo engine `wmic-cli` (Linux) che usa binario `wmic` di Samba per eseguire query WQL (solo operation=query) su host Windows remoti.
 
+## [0.3.4] - 2025-08-27
+
+### Changed (release wmic-cli 0.3.4)
+
+- Pubblicazione engine `wmic-cli` (incluso nella 0.3.3 sorgente) con nuova versione pacchetto.
+
 ## [0.3.2] - 2025-08-27
 
 ### Added (preflight 0.3.2)
@@ -171,7 +177,8 @@ Il formato segue le raccomandazioni di [Keep a Changelog](https://keepachangelog
 - Errori TypeScript relativi a tipizzazione `node-wmi`, configurazione `inputs/outputs` e build.
 - Formattazione README (lint markdown).
 
-[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.4...HEAD
+[0.3.4]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/zampierid4p/n8n-nodes-wmi/compare/v0.3.0...v0.3.1
