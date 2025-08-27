@@ -59,8 +59,21 @@ export class Wmi implements INodeType {
 		const verbose = this.getNodeParameter('verbose', 0, false) as boolean;
 
 		const noop = () => {};
-		const baseLogger: any = (this as any).logger || { debug: noop, log: noop, error: noop };
-		if (verbose) baseLogger.debug?.(`[WMI] Execution start: items=${items.length} executionId=${(this as any).getExecutionId?.() || 'n/a'}`) || baseLogger.log(`[WMI] Execution start: items=${items.length}`);
+		const rawLogger: any = (this as any).logger || { debug: noop, info: noop, warn: noop, error: noop, log: noop };
+		// Wrapper per evitare errori interni su meta undefined
+		const safeCall = (level: string, message: string) => {
+			try {
+				const fn = rawLogger[level] || rawLogger.log || noop;
+				// Alcune implementazioni n8n si aspettano sempre un oggetto meta
+				fn.call(rawLogger, message, {});
+			} catch (e) {
+				// fallback silenzioso
+			}
+		};
+		const logDebug = (m: string) => verbose && safeCall('debug', m);
+		const logError = (m: string) => verbose && safeCall('error', m);
+
+		logDebug(`[WMI] Execution start: items=${items.length} executionId=${(this as any).getExecutionId?.() || 'n/a'}`);
 
 		for (let i = 0; i < items.length; i++) {
 			try {
@@ -82,7 +95,7 @@ export class Wmi implements INodeType {
 					throw new NodeOperationError(this.getNode(), 'One or more required credential fields (host, user, password) are empty');
 				}
 
-				if (verbose) baseLogger.debug?.(`[WMI] Item ${i} start host=${wmiOptions.host} user=${wmiOptions.user} query="${query}"`) || baseLogger.log(`[WMI] Item ${i} start`);
+				logDebug(`[WMI] Item ${i} start host=${wmiOptions.host} user=${wmiOptions.user} query="${query}"`);
 
 				const started = Date.now();
 				const data = await new Promise((resolve, reject) => {
@@ -94,7 +107,7 @@ export class Wmi implements INodeType {
 					});
 				});
 
-				if (verbose) { const count = Array.isArray(data) ? data.length : (data ? 1 : 0); baseLogger.debug?.(`[WMI] Item ${i} done ${Date.now() - started}ms results=${count}`) || baseLogger.log(`[WMI] Item ${i} done`); }
+				if (verbose) { const count = Array.isArray(data) ? data.length : (data ? 1 : 0); logDebug(`[WMI] Item ${i} done ${Date.now() - started}ms results=${count}`); }
 
 				returnData.push({
 					json: { data: data as any[] },
@@ -105,7 +118,7 @@ export class Wmi implements INodeType {
 				if ((error as Error).message && (error as Error).message.includes('Cannot convert undefined or null to object')) {
 					(error as Error).message = `WMI internal error (possible invalid credentials or query). Original: ${(error as Error).message}`;
 				}
-				if (verbose) baseLogger.error?.(`[WMI] Item ${i} error: ${(error as Error).message}`) || baseLogger.log(`[WMI] Item ${i} error: ${(error as Error).message}`);
+				logError(`[WMI] Item ${i} error: ${(error as Error).message}`);
 				if (this.continueOnFail()) {
 					returnData.push({
 						json: { error: error.message },
@@ -117,7 +130,7 @@ export class Wmi implements INodeType {
 			}
 		}
 
-		if (verbose) baseLogger.debug?.('[WMI] Execution end') || baseLogger.log('[WMI] Execution end');
+		logDebug('[WMI] Execution end');
 
 		return [returnData];
 	}
